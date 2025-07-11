@@ -13,8 +13,8 @@ The meetup is held on the first Thursday of every month from 6pm at Phat Brew, C
 - ~~March: March 6, 2025~~
 - ~~April: April 3, 2025~~
 - ~~May: May 1, 2025~~
-- June: June 5, 2025
-- July: July 3, 2025
+- ~~June: June 5, 2025~~
+- ~~July: July 3, 2025~~
 - August: August 7, 2025
 - September: September 4, 2025
 - October: October 2, 2025
