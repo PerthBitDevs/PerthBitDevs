@@ -5,18 +5,19 @@ Issues are for organising topics for discussion at the monthly meetup and are op
 
 Markdown documents and other content is to serve as a reference or to assist with educating attendees on various concepts or ideas in the Bitcoin ecosystem.
 
-## 2025 Meetup Schedule
-The meetup is held on the first Thursday of every month from 6pm at Phat Brew, City West, Perth.
+## 2026 Meetup Schedule
+In 2026 we are exploring different venue options and potentially a schedule that deviates from the past (first Thursday of each month).
+The below list will be updated as/when/if the situation changes!
 
-- ~~January: January 2, 2025~~
-- ~~February: February 6, 2025~~
-- ~~March: March 6, 2025~~
-- ~~April: April 3, 2025~~
-- ~~May: May 1, 2025~~
-- ~~June: June 5, 2025~~
-- ~~July: July 3, 2025~~
-- ~~August: August 7, 2025~~
-- ~~September: September 4, 2025~~
-- ~~October: October 2, 2025~~
-- November: TBD, Busselton Bush Bash is the weekend prior
-- December: December 4, 2025
+- January: Skipped (fell on New Year's Day)
+- February: Thursday February 5 (first Thursday) venue TBD
+- March: March 5 (first Thursday), venue TBD
+- April: April 2 (first Thursday), venue TBD
+- May: May 7 (first Thursday), venue TBD
+- June: June 4 (first Thursday), venue TBD
+- July: July 2 (first Thursday), venue TBD
+- August: August 6 (first Thursday), venue TBD
+- September: September 3 (first Thursday), venue TBD
+- October: October 1 (first Thursday), venue TBD
+- November: November 5 (first Thursday), venue TBD
+- December: December 3 (first Thursday), venue TBD
