@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>New Core Maintainer: TheCharlatan — Perth BitDevs</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700;800&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0a0e17;--sf:#111827;--sf2:#1a2332;--bd:#1e293b;--bd2:#334155;--tx:#e2e8f0;--txM:#94a3b8;--txD:#64748b;--or:#f7931a;--orG:rgba(247,147,26,.15);--orD:#b36a0f;--bl:#3b82f6;--blG:rgba(59,130,246,.12);--gn:#22c55e;--gnG:rgba(34,197,94,.12);--pu:#a855f7;--puG:rgba(168,85,247,.12)}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--bg);color:var(--tx);font-family:'DM Sans',sans-serif;min-height:100vh;display:flex;flex-direction:column;overflow:hidden}
+.header{display:flex;align-items:center;justify-content:space-between;padding:10px 16px;border-bottom:1px solid var(--bd);flex-shrink:0}
+.badge{padding:3px 12px;background:var(--blG);border:1px solid var(--bl);border-radius:16px;color:var(--bl);font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:700;letter-spacing:.08em}
+.dots{display:flex;gap:4px}.dot{padding:4px 10px;border:1px solid var(--bd);border-radius:4px;background:transparent;color:var(--txD);font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:500;cursor:pointer}.dot.on{border-color:var(--or);background:var(--orG);color:var(--or);font-weight:700}
+.branding{color:var(--txD);font-family:'JetBrains Mono',monospace;font-size:9px}
+.content{flex:1;display:flex;flex-direction:column;justify-content:center;padding:16px 20px;overflow:auto}
+.si{max-width:660px;margin:0 auto;width:100%}
+.slide{display:none}.slide.active{display:block}
+h2.st{font-size:22px;font-weight:800;letter-spacing:-.02em;text-align:center;margin-bottom:18px;background:linear-gradient(135deg,var(--bl),#60a5fa);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.card{background:var(--sf2);border:1px solid var(--bd);border-radius:10px;padding:14px 18px;margin-bottom:12px}
+.cl{font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.04em;margin-bottom:8px}
+.ct{color:var(--txM);font-size:13px;line-height:1.6}.ct strong{color:var(--tx)}
+.box{border-radius:8px;padding:14px 18px;margin-bottom:12px}.box .bl{font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;margin-bottom:6px}
+.tbl{width:100%;border-collapse:collapse;margin-top:8px;font-size:12px}
+.tbl th{font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;color:var(--txD);text-align:left;padding:8px 10px;border-bottom:1px solid var(--bd);letter-spacing:.06em}
+.tbl td{padding:8px 10px;border-bottom:1px solid var(--bd);color:var(--txM);font-size:11px}
+.tbl td:first-child{font-family:'JetBrains Mono',monospace;color:var(--tx);font-weight:600}
+.tbl tr:last-child td{border-bottom:none}
+.tbl tr.highlight td{background:var(--blG)}
+.footer-nav{display:flex;align-items:center;justify-content:space-between;padding:10px 20px;border-top:1px solid var(--bd);flex-shrink:0}
+.nav-btn{padding:6px 18px;border:1px solid var(--bd2);border-radius:6px;background:transparent;color:var(--txM);font-family:'JetBrains Mono',monospace;font-size:11px;cursor:pointer}.nav-btn:disabled{opacity:.4;cursor:default}.nav-btn.next{border-color:var(--or);background:var(--orG);color:var(--or)}.nav-btn.next:disabled{border-color:var(--bd);background:transparent;color:var(--txD)}
+.nav-info{color:var(--txD);font-family:'JetBrains Mono',monospace;font-size:10px}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="badge">CORE · GOVERNANCE</div>
+  <div class="dots" id="dots"></div>
+  <div class="branding">Perth BitDevs</div>
+</div>
+
+<div class="content"><div class="si">
+
+<div class="slide" data-name="Who">
+  <h2 class="st">New Core Maintainer: Sebastian Kung</h2>
+  <div class="card">
+    <div class="cl" style="color:var(--bl)">THE NEWS</div>
+    <div class="ct">On <strong>January 8, 2026</strong>, developer <strong>Sebastian Kung</strong> (TheCharlatan / sedited) was added as the <strong>6th maintainer</strong> with commit access to Bitcoin Core's master branch. Nominated by <strong>Gloria Zhao</strong>.</div>
+  </div>
+  <div class="card">
+    <div class="cl" style="color:var(--or)">ABOUT HIM</div>
+    <div class="ct"><strong>South African</strong>. Major in computer science and minor in physics from the University of Zurich. "I like greyhounds, bitcoin, food, reproducible builds and the guix linux distribution." Contributing to Bitcoin Core since <strong>~2018</strong>.</div>
+  </div>
+  <div class="card">
+    <div class="cl" style="color:var(--gn)">FUNDED BY</div>
+    <div class="ct"><strong>Spiral</strong> (Block/Square's Bitcoin development arm) and <strong>MIT DCI</strong> (Digital Currency Initiative).</div>
+  </div>
+</div>
+
+<div class="slide" data-name="libbitcoinkernel">
+  <h2 class="st">His Key Project: libbitcoinkernel</h2>
+  <div class="box" style="background:var(--blG);border:1px solid var(--bl)">
+    <div class="bl" style="color:var(--bl)">WHAT IS IT?</div>
+    <div class="ct"><strong>libbitcoinkernel</strong> is a project to extract Bitcoin Core's <strong>consensus validation engine</strong> into a standalone library. The goal is to cleanly separate the consensus logic — everything needed to determine whether a block extends the best-work chain — from everything else in Bitcoin Core.</div>
+  </div>
+  <div class="card">
+    <div class="cl" style="color:var(--gn)">WHY IT MATTERS</div>
+    <div class="ct">Right now, Bitcoin's consensus rules are deeply entangled with networking, wallet, GUI, and RPC code. If you want to build an alternative Bitcoin implementation (e.g. in Rust), you either rewrite consensus from scratch (risking bugs and forks) or you link against all of Bitcoin Core. <strong>libbitcoinkernel gives you just the consensus part</strong> — validated, battle-tested, reusable.</div>
+  </div>
+  <div class="card">
+    <div class="cl" style="color:var(--or)">IMPACT</div>
+    <div class="ct">Enables <strong>multiple Bitcoin implementations</strong> that share the same consensus engine. Reduces the risk of consensus splits. Makes the codebase more modular, testable, and maintainable. Sebastian has been the <strong>main driving force</strong> behind this effort for the past several years.</div>
+  </div>
+</div>
+
+<div class="slide" data-name="All Maintainers">
+  <h2 class="st">Current Bitcoin Core Maintainers</h2>
+  <div class="card" style="padding:8px 12px">
+    <table class="tbl">
+      <tr><th>MAINTAINER</th><th>GITHUB</th><th>ADDED</th><th>FOCUS</th><th>NATIONALITY</th></tr>
+      <tr><td>fanquake</td><td style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--txD)">fanquake</td><td>2019</td><td>Build, Security</td><td>🇦🇺 Australian</td></tr>
+      <tr><td>Hennadii Stepanov</td><td style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--txD)">hebasto</td><td>2021</td><td>GUI, CMake</td><td>🇺🇦 Ukrainian</td></tr>
+      <tr><td>Ava Chow</td><td style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--txD)">achow101</td><td>2021</td><td>Wallet, HWI</td><td>🇺🇸 American</td></tr>
+      <tr><td>Gloria Zhao</td><td style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--txD)">glozow</td><td>2022</td><td>Mempool, P2P</td><td>🇺🇸 American</td></tr>
+      <tr><td>Ryan Ofsky</td><td style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--txD)">ryanofsky</td><td>2023</td><td>Multiprocess/IPC</td><td>🇺🇸 American</td></tr>
+      <tr class="highlight"><td>Sebastian Kung</td><td style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--bl)">TheCharlatan</td><td>2026</td><td style="color:var(--bl)">Kernel, Validation</td><td>🇿🇦 South African</td></tr>
+    </table>
+  </div>
+  <div class="box" style="background:var(--orG);border:1px solid var(--orD);margin-top:4px">
+    <div class="bl" style="color:var(--or)">HISTORY</div>
+    <div class="ct">The trusted-keys file in the Bitcoin Core repo tracks all maintainer additions and removals over time. Maintainers have merge commit access but consensus changes still require broad review and agreement from the wider contributor base.</div>
+  </div>
+</div>
+
+</div></div>
+
+<div class="footer-nav">
+  <button class="nav-btn" id="prevBtn" onclick="go(-1)">← Prev</button>
+  <div class="nav-info" id="navInfo"></div>
+  <button class="nav-btn next" id="nextBtn" onclick="go(1)">Next →</button>
+</div>
+
+<script>
+const slides=document.querySelectorAll('.slide');const names=Array.from(slides).map(s=>s.dataset.name);let cur=0;
+function render(){slides.forEach((s,i)=>s.classList.toggle('active',i===cur));document.getElementById('dots').innerHTML=names.map((_,i)=>`<button class="dot${i===cur?' on':''}" onclick="goTo(${i})">${i+1}</button>`).join('');document.getElementById('navInfo').textContent=names[cur]+' · '+(cur+1)+' / '+slides.length;document.getElementById('prevBtn').disabled=cur===0;const nb=document.getElementById('nextBtn');nb.disabled=cur===slides.length-1;nb.className=cur===slides.length-1?'nav-btn':'nav-btn next'}
+function go(d){cur=Math.max(0,Math.min(slides.length-1,cur+d));render()}function goTo(i){cur=i;render()}document.addEventListener('keydown',e=>{if(e.key==='ArrowRight')go(1);if(e.key==='ArrowLeft')go(-1)});render();
+</script>
+</body>
+</html>

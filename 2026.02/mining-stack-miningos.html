@@ -1,0 +1,704 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bitcoin Mining Software Stack — Where MiningOS Fits</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Space+Grotesk:wght@400;500;600;700&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0f;
+    --surface: #12121a;
+    --surface-elevated: #1a1a26;
+    --border: #2a2a3a;
+    --border-highlight: #3a3a5a;
+    --text: #e8e8f0;
+    --text-dim: #8888a0;
+    --text-muted: #555570;
+    --orange: #f7931a;
+    --orange-dim: rgba(247, 147, 26, 0.15);
+    --orange-glow: rgba(247, 147, 26, 0.3);
+    --blue: #4a9eff;
+    --blue-dim: rgba(74, 158, 255, 0.12);
+    --green: #34d399;
+    --green-dim: rgba(52, 211, 153, 0.12);
+    --purple: #a78bfa;
+    --purple-dim: rgba(167, 139, 250, 0.12);
+    --red: #f87171;
+    --tether-green: #50af95;
+    --tether-green-dim: rgba(80, 175, 149, 0.15);
+    --tether-green-glow: rgba(80, 175, 149, 0.35);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  .noise {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 999;
+  }
+
+  .container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 40px 24px 80px;
+    position: relative;
+  }
+
+  /* Header */
+  header {
+    text-align: center;
+    margin-bottom: 56px;
+    position: relative;
+  }
+
+  header::before {
+    content: '';
+    position: absolute;
+    top: -60px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 400px;
+    height: 400px;
+    background: radial-gradient(circle, var(--orange-dim) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 16px;
+    border: 1px solid var(--border);
+    border-radius: 100px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--orange);
+    margin-bottom: 20px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .badge::before {
+    content: '';
+    width: 6px; height: 6px;
+    background: var(--orange);
+    border-radius: 50%;
+    animation: pulse 2s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+  }
+
+  h1 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: clamp(28px, 5vw, 44px);
+    font-weight: 700;
+    line-height: 1.15;
+    letter-spacing: -0.03em;
+    position: relative;
+    z-index: 1;
+  }
+
+  h1 .highlight {
+    color: var(--tether-green);
+  }
+
+  .subtitle {
+    font-size: 16px;
+    color: var(--text-dim);
+    margin-top: 12px;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+    line-height: 1.6;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* Stack Diagram */
+  .stack {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    margin-bottom: 56px;
+    position: relative;
+  }
+
+  .stack-connector {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 48px;
+    position: relative;
+  }
+
+  .stack-connector .line {
+    width: 2px;
+    height: 100%;
+    background: linear-gradient(to bottom, var(--border-highlight), var(--border));
+    position: relative;
+  }
+
+  .stack-connector .line::before,
+  .stack-connector .line::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 8px; height: 8px;
+    border: 2px solid var(--border-highlight);
+    border-radius: 50%;
+    background: var(--bg);
+  }
+
+  .stack-connector .line::before { top: -4px; }
+  .stack-connector .line::after { bottom: -4px; }
+
+  .connector-label {
+    position: absolute;
+    left: calc(50% + 24px);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--text-muted);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  /* Layer Cards */
+  .layer {
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    background: var(--surface);
+    overflow: hidden;
+    transition: all 0.3s ease;
+    position: relative;
+  }
+
+  .layer:hover {
+    border-color: var(--border-highlight);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+  }
+
+  .layer-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 24px 28px;
+    cursor: pointer;
+    user-select: none;
+  }
+
+  .layer-number {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 6px;
+    letter-spacing: 0.05em;
+    flex-shrink: 0;
+  }
+
+  .layer-title-block {
+    flex: 1;
+  }
+
+  .layer-title {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+  }
+
+  .layer-where {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--text-muted);
+    margin-top: 4px;
+    letter-spacing: 0.02em;
+  }
+
+  .layer-toggle {
+    font-size: 18px;
+    color: var(--text-muted);
+    transition: transform 0.3s ease;
+    flex-shrink: 0;
+  }
+
+  .layer.open .layer-toggle {
+    transform: rotate(180deg);
+  }
+
+  .layer-body {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .layer.open .layer-body {
+    max-height: 800px;
+  }
+
+  .layer-content {
+    padding: 0 28px 28px;
+    display: grid;
+    gap: 20px;
+  }
+
+  .layer-desc {
+    font-size: 14px;
+    line-height: 1.7;
+    color: var(--text-dim);
+  }
+
+  .layer-desc strong {
+    color: var(--text);
+    font-weight: 600;
+  }
+
+  .examples-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 10px;
+  }
+
+  .example-chip {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 14px;
+    border-radius: 10px;
+    font-size: 13px;
+    font-weight: 500;
+  }
+
+  .example-chip .dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .example-chip .tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    padding: 2px 6px;
+    border-radius: 4px;
+    margin-left: auto;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    flex-shrink: 0;
+  }
+
+  /* Layer-specific colors */
+  .layer--pool .layer-number { background: var(--purple-dim); color: var(--purple); }
+  .layer--pool { border-color: rgba(167, 139, 250, 0.15); }
+  .layer--pool:hover { border-color: rgba(167, 139, 250, 0.3); }
+  .layer--pool .example-chip { background: var(--purple-dim); }
+  .layer--pool .example-chip .dot { background: var(--purple); }
+  .layer--pool .example-chip .tag { background: rgba(167, 139, 250, 0.15); color: var(--purple); }
+
+  .layer--mgmt .layer-number { background: var(--tether-green-dim); color: var(--tether-green); }
+  .layer--mgmt { border-color: rgba(80, 175, 149, 0.2); }
+  .layer--mgmt:hover { border-color: rgba(80, 175, 149, 0.35); }
+  .layer--mgmt .example-chip { background: var(--tether-green-dim); }
+  .layer--mgmt .example-chip .dot { background: var(--tether-green); }
+  .layer--mgmt .example-chip .tag { background: rgba(80, 175, 149, 0.15); color: var(--tether-green); }
+
+  .layer--firmware .layer-number { background: var(--orange-dim); color: var(--orange); }
+  .layer--firmware { border-color: rgba(247, 147, 26, 0.15); }
+  .layer--firmware:hover { border-color: rgba(247, 147, 26, 0.3); }
+  .layer--firmware .example-chip { background: var(--orange-dim); }
+  .layer--firmware .example-chip .dot { background: var(--orange); }
+  .layer--firmware .example-chip .tag { background: rgba(247, 147, 26, 0.15); color: var(--orange); }
+
+  .layer--hw .layer-number { background: var(--blue-dim); color: var(--blue); }
+  .layer--hw { border-color: rgba(74, 158, 255, 0.12); }
+  .layer--hw:hover { border-color: rgba(74, 158, 255, 0.25); }
+  .layer--hw .example-chip { background: var(--blue-dim); }
+  .layer--hw .example-chip .dot { background: var(--blue); }
+  .layer--hw .example-chip .tag { background: rgba(74, 158, 255, 0.1); color: var(--blue); }
+
+  /* MiningOS highlight */
+  .mos-callout {
+    position: relative;
+    margin: -8px 0;
+    z-index: 2;
+  }
+
+  .mos-callout .layer {
+    border: 2px solid var(--tether-green);
+    box-shadow: 0 0 40px var(--tether-green-dim), inset 0 0 60px rgba(80, 175, 149, 0.03);
+  }
+
+  .mos-callout .layer:hover {
+    box-shadow: 0 0 60px var(--tether-green-glow), inset 0 0 60px rgba(80, 175, 149, 0.05);
+  }
+
+  .mos-badge {
+    position: absolute;
+    top: -12px;
+    right: 28px;
+    background: var(--tether-green);
+    color: #0a0a0f;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 4px 12px;
+    border-radius: 6px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    z-index: 3;
+  }
+
+  /* Key Insight Box */
+  .insight-box {
+    margin-top: 48px;
+    padding: 28px 32px;
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--orange);
+    border-radius: 12px;
+    background: var(--surface);
+  }
+
+  .insight-box h3 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--orange);
+    margin-bottom: 12px;
+    letter-spacing: -0.01em;
+  }
+
+  .insight-box p {
+    font-size: 14px;
+    line-height: 1.7;
+    color: var(--text-dim);
+  }
+
+  .insight-box p strong {
+    color: var(--text);
+  }
+
+  /* Example Stack */
+  .example-stack {
+    margin-top: 48px;
+  }
+
+  .example-stack h2 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    margin-bottom: 20px;
+  }
+
+  .example-row {
+    display: flex;
+    align-items: stretch;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+
+  .example-card {
+    flex: 1;
+    min-width: 260px;
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    background: var(--surface);
+    padding: 24px;
+    position: relative;
+  }
+
+  .example-card h4 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .example-card h4 .icon {
+    font-size: 18px;
+  }
+
+  .example-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 14px;
+    border-radius: 8px;
+    margin-bottom: 6px;
+    font-size: 13px;
+    font-weight: 500;
+  }
+
+  .example-item .label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    width: 70px;
+    flex-shrink: 0;
+  }
+
+  .example-item.pool-item { background: var(--purple-dim); color: var(--purple); }
+  .example-item.mgmt-item { background: var(--tether-green-dim); color: var(--tether-green); }
+  .example-item.fw-item { background: var(--orange-dim); color: var(--orange); }
+  .example-item.hw-item { background: var(--blue-dim); color: var(--blue); }
+
+  /* Footer */
+  .footer {
+    margin-top: 56px;
+    text-align: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--text-muted);
+    letter-spacing: 0.04em;
+  }
+
+  .footer a {
+    color: var(--tether-green);
+    text-decoration: none;
+  }
+
+  .footer a:hover { text-decoration: underline; }
+
+  /* NOT firmware callout */
+  .not-firmware {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(248, 113, 113, 0.1);
+    color: var(--red);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 4px 12px;
+    border-radius: 6px;
+    letter-spacing: 0.04em;
+    margin-top: 6px;
+  }
+
+  /* API arrow indicators */
+  .api-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--text-muted);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  @media (max-width: 640px) {
+    .container { padding: 24px 16px 60px; }
+    .layer-header { padding: 18px 20px; }
+    .layer-content { padding: 0 20px 20px; }
+    .examples-grid { grid-template-columns: 1fr; }
+    .example-row { flex-direction: column; }
+    .connector-label { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="noise"></div>
+
+<div class="container">
+
+  <header>
+    <div class="badge"><span></span>Perth BitDevs — Feb 2026</div>
+    <h1>Bitcoin Mining Software Stack<br>Where <span class="highlight">MiningOS</span> Fits</h1>
+    <p class="subtitle">MiningOS is fleet management software, not ASIC firmware. Here's the full stack, layer by layer, so you can see exactly where each piece lives.</p>
+  </header>
+
+  <!-- STACK DIAGRAM -->
+  <div class="stack">
+
+    <!-- Layer 3: Pool / Stratum -->
+    <div class="layer layer--pool" onclick="this.classList.toggle('open')">
+      <div class="layer-header">
+        <span class="layer-number">L3</span>
+        <div class="layer-title-block">
+          <div class="layer-title">Mining Pool / Stratum</div>
+          <div class="layer-where">Remote — pool server infrastructure</div>
+        </div>
+        <span class="layer-toggle">▾</span>
+      </div>
+      <div class="layer-body">
+        <div class="layer-content">
+          <p class="layer-desc">
+            The protocol layer connecting your ASICs to the pool that coordinates work distribution and reward payouts. Miners receive block templates and submit shares via <strong>Stratum V1</strong> or the newer <strong>Stratum V2</strong> (which gives miners more control over transaction selection). MiningOS can <strong>configure</strong> pool settings on your miners, but it doesn't implement the protocol itself.
+          </p>
+          <div class="examples-grid">
+            <div class="example-chip"><span class="dot"></span> Ocean <span class="tag">Non-custodial</span></div>
+            <div class="example-chip"><span class="dot"></span> Braiins Pool</div>
+            <div class="example-chip"><span class="dot"></span> Foundry USA</div>
+            <div class="example-chip"><span class="dot"></span> DEMAND</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="stack-connector">
+      <div class="line"></div>
+      <span class="connector-label">Stratum V1 / V2 protocol</span>
+    </div>
+
+    <!-- Layer 2: Fleet Management — MiningOS -->
+    <div class="mos-callout">
+      <span class="mos-badge">← MiningOS lives here</span>
+      <div class="layer layer--mgmt open" onclick="this.classList.toggle('open')">
+        <div class="layer-header">
+          <span class="layer-number">L2</span>
+          <div class="layer-title-block">
+            <div class="layer-title">Fleet Management & Orchestration</div>
+            <div class="layer-where">Runs on YOUR separate machine — laptop, server, etc.</div>
+            <div class="not-firmware">✕ Does NOT run on the ASIC</div>
+          </div>
+          <span class="layer-toggle">▾</span>
+        </div>
+        <div class="layer-body">
+          <div class="layer-content">
+            <p class="layer-desc">
+              This is where <strong>Tether's MiningOS</strong> sits. It's a JavaScript application that runs on your own computer (Windows, macOS, Linux) and talks <strong>to</strong> your miners over the network via their APIs. It reads telemetry (hashrate, temps, power), displays it in a unified dashboard, and lets you manage pool configs, alerts, and energy across all your devices and sites. It does <strong>not</strong> replace or modify what's running on the ASIC itself — it wraps around your existing firmware.
+            </p>
+            <p class="layer-desc">
+              <strong>Key MiningOS differentiator:</strong> Uses Holepunch/Hyperswarm P2P networking instead of a central cloud server. Your sites mesh together directly. Self-hosted, no subscriptions, Apache 2.0 licensed.
+            </p>
+            <div class="examples-grid">
+              <div class="example-chip"><span class="dot"></span> MiningOS (MOS) <span class="tag">Free / OSS</span></div>
+              <div class="example-chip"><span class="dot"></span> Foreman <span class="tag">Paid</span></div>
+              <div class="example-chip"><span class="dot"></span> Hive OS <span class="tag">$2/worker</span></div>
+              <div class="example-chip"><span class="dot"></span> Awesome Miner <span class="tag">Paid</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="stack-connector">
+      <div class="line"></div>
+      <span class="connector-label">cgminer RPC API / HTTP API (port 4028) over LAN</span>
+    </div>
+
+    <!-- Layer 1: ASIC Firmware -->
+    <div class="layer layer--firmware" onclick="this.classList.toggle('open')">
+      <div class="layer-header">
+        <span class="layer-number">L1</span>
+        <div class="layer-title-block">
+          <div class="layer-title">ASIC Firmware</div>
+          <div class="layer-where">Runs ON the miner's control board (flashed to NAND / SD card)</div>
+        </div>
+        <span class="layer-toggle">▾</span>
+      </div>
+      <div class="layer-body">
+        <div class="layer-content">
+          <p class="layer-desc">
+            Software <strong>flashed directly onto the ASIC's control board</strong>. Controls chip-level operations: per-chip frequency tuning, voltage regulation, fan speed, thermal management, and the actual SHA-256 hashing. Exposes data via an API (typically cgminer RPC on port 4028) that management software (Layer 2) can query. Aftermarket firmware like Braiins OS can improve efficiency 10–25% via autotuning — stock firmware from Bitmain/MicroBT generally cannot. This is the layer where hashrate is actually produced.
+          </p>
+          <div class="examples-grid">
+            <div class="example-chip"><span class="dot"></span> Bitmain stock <span class="tag">Factory</span></div>
+            <div class="example-chip"><span class="dot"></span> MicroBT stock <span class="tag">Factory</span></div>
+            <div class="example-chip"><span class="dot"></span> Braiins OS+ <span class="tag">2% devfee</span></div>
+            <div class="example-chip"><span class="dot"></span> Vnish <span class="tag">2.8% devfee</span></div>
+            <div class="example-chip"><span class="dot"></span> LuxOS <span class="tag">Aftermarket</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="stack-connector">
+      <div class="line"></div>
+      <span class="connector-label">Direct hardware control (SPI / I²C / GPIO)</span>
+    </div>
+
+    <!-- Layer 0: Physical Hardware -->
+    <div class="layer layer--hw" onclick="this.classList.toggle('open')">
+      <div class="layer-header">
+        <span class="layer-number">L0</span>
+        <div class="layer-title-block">
+          <div class="layer-title">Physical Hardware</div>
+          <div class="layer-where">The silicon, boards, PSUs, fans, and enclosures</div>
+        </div>
+        <span class="layer-toggle">▾</span>
+      </div>
+      <div class="layer-body">
+        <div class="layer-content">
+          <p class="layer-desc">
+            The actual ASIC chips, hash boards, control boards, power supplies, fans, and cooling infrastructure. This is the physical layer that does the work — everything above is software controlling or monitoring it.
+          </p>
+          <div class="examples-grid">
+            <div class="example-chip"><span class="dot"></span> Antminer S21 XP</div>
+            <div class="example-chip"><span class="dot"></span> Whatsminer M66S</div>
+            <div class="example-chip"><span class="dot"></span> Avalon A15</div>
+            <div class="example-chip"><span class="dot"></span> Bitaxe (open-source)</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- KEY INSIGHT -->
+  <div class="insight-box">
+    <h3>⚡ Key Insight: These Layers Are Complementary, Not Competing</h3>
+    <p>
+      A miner could run <strong>Braiins OS+</strong> on their S21s (Layer 1, for autotuning efficiency gains), monitored by <strong>MiningOS</strong> on a server (Layer 2, for unified fleet dashboard), connected to <strong>Ocean Pool</strong> (Layer 3). The naming "MiningOS" is genuinely confusing — it's an OS for your mining <em>operation</em>, not for individual <em>devices</em>. Braiins OS is actual device firmware. MiningOS is more like a SCADA system for your mine.
+    </p>
+  </div>
+
+  <!-- EXAMPLE STACKS -->
+  <div class="example-stack">
+    <h2>Example Configurations</h2>
+    <div class="example-row">
+      <div class="example-card">
+        <h4><span class="icon">🏠</span> Home Miner</h4>
+        <div class="example-item pool-item"><span class="label">Pool</span> Ocean</div>
+        <div class="example-item mgmt-item"><span class="label">Mgmt</span> MiningOS on laptop</div>
+        <div class="example-item fw-item"><span class="label">Firmware</span> Bitmain stock</div>
+        <div class="example-item hw-item"><span class="label">Hardware</span> Antminer S21</div>
+      </div>
+      <div class="example-card">
+        <h4><span class="icon">🏭</span> Industrial Site</h4>
+        <div class="example-item pool-item"><span class="label">Pool</span> Foundry USA</div>
+        <div class="example-item mgmt-item"><span class="label">Mgmt</span> MiningOS (multi-site P2P)</div>
+        <div class="example-item fw-item"><span class="label">Firmware</span> Braiins OS+ (autotuned)</div>
+        <div class="example-item hw-item"><span class="label">Hardware</span> 5,000× Whatsminer M66S</div>
+      </div>
+      <div class="example-card">
+        <h4><span class="icon">⚡</span> Energy Monetiser</h4>
+        <div class="example-item pool-item"><span class="label">Pool</span> DEMAND Pool</div>
+        <div class="example-item mgmt-item"><span class="label">Mgmt</span> MiningOS + energy orch.</div>
+        <div class="example-item fw-item"><span class="label">Firmware</span> Vnish (curtailment)</div>
+        <div class="example-item hw-item"><span class="label">Hardware</span> Mixed fleet</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">
+    Built for Perth BitDevs · Source: <a href="https://mos.tether.io" target="_blank">mos.tether.io</a> · <a href="https://docs.mos.tether.io" target="_blank">docs.mos.tether.io</a>
+  </div>
+
+</div>
+
+</body>
+</html>

@@ -9,8 +9,8 @@ Markdown documents and other content is to serve as a reference or to assist wit
 In 2026 we are exploring different venue options and potentially a schedule that deviates from the past (first Thursday of each month).
 The below list will be updated as/when/if the situation changes!
 
-- January: Skipped (fell on New Year's Day)
-- February: Thursday February 5 (first Thursday) venue TBD
+- ~~January: Skipped (fell on New Year's Day)~~
+- ~~February: Thursday February 5 (first Thursday) venue The Loft Lounge & Bar @ InterContinential Perth City Centre~~
 - March: March 5 (first Thursday), venue TBD
 - April: April 2 (first Thursday), venue TBD
 - May: May 7 (first Thursday), venue TBD

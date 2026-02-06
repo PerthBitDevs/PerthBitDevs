@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Perth BitDevs — February 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+  :root{--bg:#06080d;--sf:#0d1117;--sf2:#151b25;--bd:#1c2432;--bdh:#2a3545;--tx:#e2e8f0;--txM:#94a3b8;--txD:#506078;--or:#f7931a;--orD:rgba(247,147,26,.10);--orG:rgba(247,147,26,.25);--orB:#b36a0f;--bl:#3b82f6;--bld:rgba(59,130,246,.12);--gn:#22c55e;--gnd:rgba(34,197,94,.12);--pu:#a855f7;--pud:rgba(168,85,247,.12);--rd:#ef4444;--rdd:rgba(239,68,68,.12);--cy:#06b6d4;--cyd:rgba(6,182,212,.12);--pk:#ec4899;--pkd:rgba(236,72,153,.12);--yl:#eab308;--yld:rgba(234,179,8,.12);--tl:#14b8a6;--tld:rgba(20,184,166,.12)}
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{background:var(--bg);color:var(--tx);font-family:'DM Sans',sans-serif;min-height:100vh;-webkit-font-smoothing:antialiased}
+  body::before{content:"";position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E");pointer-events:none;z-index:1000}
+  .glow{position:fixed;top:-180px;left:50%;transform:translateX(-50%);width:700px;height:400px;background:radial-gradient(ellipse at center,var(--orG) 0%,transparent 70%);opacity:.4;pointer-events:none;filter:blur(80px)}
+  .shell{max-width:760px;margin:0 auto;padding:52px 24px 100px;position:relative}
+  header{text-align:center;margin-bottom:48px}
+  .badge{display:inline-block;padding:5px 16px;border:1px solid var(--orB);border-radius:20px;background:var(--orD);color:var(--or);font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-bottom:18px}
+  h1{font-family:'JetBrains Mono',monospace;font-size:clamp(28px,5vw,38px);font-weight:800;letter-spacing:-.03em;line-height:1.15;margin-bottom:10px;background:linear-gradient(135deg,#f7931a 0%,#fbbf24 50%,#f7931a 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+  .subtitle{color:var(--txD);font-size:14px;font-family:'JetBrains Mono',monospace}
+  .divider{height:1px;background:linear-gradient(90deg,transparent 0%,var(--bd) 30%,var(--bd) 70%,transparent 100%);margin-bottom:32px}
+  .section-label{font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;color:var(--txD);letter-spacing:.14em;text-transform:uppercase;margin-bottom:16px;padding-left:2px}
+  .section-gap{margin-bottom:40px}
+  .cards{display:flex;flex-direction:column;gap:12px;margin-bottom:12px}
+  a.card{display:block;text-decoration:none;background:var(--sf);border:1px solid var(--bd);border-radius:12px;padding:20px 22px;transition:all .2s ease;position:relative;overflow:hidden;cursor:pointer}
+  a.card::before{content:"";position:absolute;top:0;left:0;width:3px;height:100%;border-radius:12px 0 0 12px;transition:opacity .2s ease;opacity:.6}
+  a.card:hover{border-color:var(--bdh);background:var(--sf2);transform:translateY(-1px);box-shadow:0 4px 24px rgba(0,0,0,.3)}
+  a.card:hover::before{opacity:1}
+  .card-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:7px;gap:8px}
+  .card-tags{display:flex;gap:6px;flex-wrap:wrap}
+  .card-tag{font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:700;letter-spacing:.06em;padding:3px 9px;border-radius:10px;text-transform:uppercase;white-space:nowrap}
+  .card-arrow{font-family:'JetBrains Mono',monospace;font-size:14px;color:var(--txD);transition:all .2s ease;flex-shrink:0}
+  a.card:hover .card-arrow{color:var(--or);transform:translateX(3px)}
+  .card-title{font-family:'JetBrains Mono',monospace;font-size:15px;font-weight:700;color:var(--tx);margin-bottom:5px;letter-spacing:-.01em;line-height:1.35}
+  .card-desc{color:var(--txM);font-size:13px;line-height:1.55}
+  .card-meta{display:flex;gap:12px;margin-top:10px;flex-wrap:wrap}
+  .card-meta-item{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--txD);display:flex;align-items:center;gap:5px}
+  .card-meta-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+  .card--or::before{background:var(--or)}.card--or .card-tag{color:var(--or);background:var(--orD)}
+  .card--bl::before{background:var(--bl)}.card--bl .card-tag{color:var(--bl);background:var(--bld)}
+  .card--gn::before{background:var(--gn)}.card--gn .card-tag{color:var(--gn);background:var(--gnd)}
+  .card--pu::before{background:var(--pu)}.card--pu .card-tag{color:var(--pu);background:var(--pud)}
+  .card--rd::before{background:var(--rd)}.card--rd .card-tag{color:var(--rd);background:var(--rdd)}
+  .card--cy::before{background:var(--cy)}.card--cy .card-tag{color:var(--cy);background:var(--cyd)}
+  .card--pk::before{background:var(--pk)}.card--pk .card-tag{color:var(--pk);background:var(--pkd)}
+  .card--yl::before{background:var(--yl)}.card--yl .card-tag{color:var(--yl);background:var(--yld)}
+  .card--tl::before{background:var(--tl)}.card--tl .card-tag{color:var(--tl);background:var(--tld)}
+  footer{text-align:center;padding-top:20px;border-top:1px solid var(--bd);margin-top:16px}
+  footer p{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--txD);line-height:1.8}
+  footer a{color:var(--or);text-decoration:none}footer a:hover{text-decoration:underline}
+  @media(max-width:480px){.shell{padding:36px 16px 60px}a.card{padding:16px}.card-title{font-size:13px}}
+</style>
+</head>
+<body>
+<div class="glow"></div>
+<div class="shell">
+
+  <header>
+    <div class="badge">February 2026</div>
+    <h1>Perth BitDevs</h1>
+    <div class="subtitle">Interactive topic explainers</div>
+  </header>
+
+  <div class="divider"></div>
+  <div class="section-label">Technical / Protocol</div>
+  <div class="cards section-gap">
+
+    <a class="card card--rd" href="bip-110.html">
+      <div class="card-top"><div class="card-tags"><span class="card-tag">BIP-110</span></div><span class="card-arrow">→</span></div>
+      <div class="card-title">BIP-110 — Temporarily Limiting Arbitrary Data</div>
+      <div class="card-desc">7 consensus-level restrictions on arbitrary data for ~1 year. Reaction to Core v30 removing the OP_RETURN limit. Zero signaling so far.</div>
+      <div class="card-meta"><span class="card-meta-item"><span class="card-meta-dot" style="background:var(--rd)"></span>4 slides</span></div>
+    </a>
+
+    <a class="card card--cy" href="private-tx-broadcast.html">
+      <div class="card-top"><div class="card-tags"><span class="card-tag">Privacy</span><span class="card-tag">PR #29415</span></div><span class="card-arrow">→</span></div>
+      <div class="card-title">Private Transaction Broadcast via Tor/I2P</div>
+      <div class="card-desc">Short-lived anonymous connections for each transaction broadcast. A 12-year-old privacy issue finally being addressed.</div>
+      <div class="card-meta"><span class="card-meta-item"><span class="card-meta-dot" style="background:var(--cy)"></span>3 slides</span></div>
+    </a>
+
+  </div>
+
+  <div class="divider"></div>
+  <div class="section-label">Bitcoin Core</div>
+  <div class="cards section-gap">
+
+    <a class="card card--bl" href="new-core-maintainer.html">
+      <div class="card-top"><div class="card-tags"><span class="card-tag">Governance</span></div><span class="card-arrow">→</span></div>
+      <div class="card-title">New Core Maintainer: Sebastian Kung (TheCharlatan)</div>
+      <div class="card-desc">6th maintainer added January 2026. Driving force behind libbitcoinkernel. Full maintainer roster breakdown.</div>
+      <div class="card-meta"><span class="card-meta-item"><span class="card-meta-dot" style="background:var(--bl)"></span>3 slides</span></div>
+    </a>
+
+    <a class="card card--rd" href="wallet-migration-bug.html">
+      <div class="card-top"><div class="card-tags"><span class="card-tag">Bug</span><span class="card-tag">v30</span></div><span class="card-arrow">→</span></div>
+      <div class="card-title">Bitcoin Core v30 Wallet Migration Bug</div>
+      <div class="card-desc">Critical bug: migrating a legacy wallet could delete all wallet files. Binaries pulled from bitcoincore.org. Fixed in v30.2.</div>
+      <div class="card-meta"><span class="card-meta-item"><span class="card-meta-dot" style="background:var(--rd)"></span>2 slides</span></div>
+    </a>
+
+  </div>
+
+  <div class="divider"></div>
+  <div class="section-label">Mining</div>
+  <div class="cards section-gap">
+
+    <a class="card card--tl" href="mining-stack-miningos.html">
+      <div class="card-top"><div class="card-tags"><span class="card-tag">Mining</span><span class="card-tag">Tether</span></div><span class="card-arrow">→</span></div>
+      <div class="card-title">Tether Open-Sources MiningOS</div>
+      <div class="card-desc">Fleet management for Bitcoin mining, Apache 2.0. P2P architecture via Holepunch/Hyperswarm. Visual breakdown of the full mining stack.</div>
+      <div class="card-meta"><span class="card-meta-item"><span class="card-meta-dot" style="background:var(--tl)"></span>Visual explainer</span></div>
+    </a>
+
+  </div>
+
+  <div class="divider"></div>
+  <div class="section-label">AI &amp; Agents</div>
+  <div class="cards section-gap">
+
+    <a class="card card--pk" href="openclaw-agents.html">
+      <div class="card-top"><div class="card-tags"><span class="card-tag">AI Agents</span><span class="card-tag">Security</span></div><span class="card-arrow">→</span></div>
+      <div class="card-title">OpenClaw, Moltbook &amp; the Agent Security Dumpster Fire</div>
+      <div class="card-desc">145k GitHub stars, 1.5M agent accounts, RCE vulnerabilities, supply chain attacks, and the Nostr/Lightning alternative.</div>
+      <div class="card-meta"><span class="card-meta-item"><span class="card-meta-dot" style="background:var(--pk)"></span>3 slides</span></div>
+    </a>
+
+  </div>
+
+  <footer>
+    <p>
+      Perth BitDevs · February 2026<br>
+      <a href="https://github.com/PerthBitDevs/PerthBitDevs/issues/30" target="_blank">GitHub Issue #30</a> · Built with Claude
+    </p>
+  </footer>
+
+</div>
+</body>
+</html>

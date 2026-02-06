@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Private Tx Broadcast via Tor/I2P — Perth BitDevs</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700;800&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0a0e17;--sf:#111827;--sf2:#1a2332;--bd:#1e293b;--bd2:#334155;--tx:#e2e8f0;--txM:#94a3b8;--txD:#64748b;--or:#f7931a;--orG:rgba(247,147,26,.15);--orD:#b36a0f;--rd:#ef4444;--rdG:rgba(239,68,68,.12);--gn:#22c55e;--gnG:rgba(34,197,94,.12);--bl:#3b82f6;--blG:rgba(59,130,246,.12);--cy:#06b6d4;--cyG:rgba(6,182,212,.12)}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--bg);color:var(--tx);font-family:'DM Sans',sans-serif;min-height:100vh;display:flex;flex-direction:column;overflow:hidden}
+.header{display:flex;align-items:center;justify-content:space-between;padding:10px 16px;border-bottom:1px solid var(--bd);flex-shrink:0}
+.badge{padding:3px 12px;background:var(--cyG);border:1px solid var(--cy);border-radius:16px;color:var(--cy);font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:700;letter-spacing:.08em}
+.dots{display:flex;gap:4px}.dot{padding:4px 10px;border:1px solid var(--bd);border-radius:4px;background:transparent;color:var(--txD);font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:500;cursor:pointer}.dot.on{border-color:var(--or);background:var(--orG);color:var(--or);font-weight:700}
+.branding{color:var(--txD);font-family:'JetBrains Mono',monospace;font-size:9px}
+.content{flex:1;display:flex;flex-direction:column;justify-content:center;padding:16px 20px;overflow:auto}
+.si{max-width:640px;margin:0 auto;width:100%}
+.slide{display:none}.slide.active{display:block}
+h2.st{font-size:22px;font-weight:800;letter-spacing:-.02em;text-align:center;margin-bottom:18px;background:linear-gradient(135deg,var(--cy),#67e8f9);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.card{background:var(--sf2);border:1px solid var(--bd);border-radius:10px;padding:14px 18px;margin-bottom:12px}
+.cl{font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.04em;margin-bottom:8px}
+.ct{color:var(--txM);font-size:13px;line-height:1.6}.ct strong{color:var(--tx)}
+.box{border-radius:8px;padding:14px 18px;margin-bottom:12px}.box .bl{font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;margin-bottom:6px}
+.cols{display:flex;gap:12px}.cols>div{flex:1}
+.diagram{background:var(--sf);border:1px solid var(--bd);border-radius:10px;padding:20px;margin-bottom:12px;text-align:center}
+.diagram svg{max-width:100%;height:auto}
+.footer-nav{display:flex;align-items:center;justify-content:space-between;padding:10px 20px;border-top:1px solid var(--bd);flex-shrink:0}
+.nav-btn{padding:6px 18px;border:1px solid var(--bd2);border-radius:6px;background:transparent;color:var(--txM);font-family:'JetBrains Mono',monospace;font-size:11px;cursor:pointer}.nav-btn:disabled{opacity:.4;cursor:default}.nav-btn.next{border-color:var(--or);background:var(--orG);color:var(--or)}.nav-btn.next:disabled{border-color:var(--bd);background:transparent;color:var(--txD)}
+.nav-info{color:var(--txD);font-family:'JetBrains Mono',monospace;font-size:10px}
+@media(max-width:600px){.cols{flex-direction:column}h2.st{font-size:18px}}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="badge">PRIVACY · PR #29415</div>
+  <div class="dots" id="dots"></div>
+  <div class="branding">Perth BitDevs</div>
+</div>
+
+<div class="content"><div class="si">
+
+<!-- Slide 1: The Problem -->
+<div class="slide" data-name="Problem">
+  <h2 class="st">The Transaction Broadcast Privacy Problem</h2>
+  <div class="box" style="background:var(--rdG);border:1px solid var(--rd)">
+    <div class="bl" style="color:var(--rd)">THE ISSUE</div>
+    <div class="ct">When your node broadcasts a transaction you created, <strong>network observers</strong> (e.g. spy nodes with many connections) can use <strong>timing analysis</strong> and <strong>connection fingerprinting</strong> to link the transaction back to your IP address.</div>
+  </div>
+  <div class="card">
+    <div class="cl" style="color:var(--cy)">WHY EXISTING TOR ISN'T ENOUGH</div>
+    <div class="ct">Even if you're connected to some Tor peers, <strong>long-lived connections can be fingerprinted</strong> and correlated with your clearnet identity. A persistent connection to a Tor peer is still a fixed, identifiable channel that can be attributed over time.</div>
+  </div>
+  <div class="card">
+    <div class="cl" style="color:var(--txD)">HOW LONG HAS THIS BEEN KNOWN?</div>
+    <div class="ct">This has been a known issue for years, with at least <strong>six related GitHub issues</strong> dating back to <strong>2014</strong> (issue #3828). That's 12 years of this being an open problem.</div>
+  </div>
+</div>
+
+<!-- Slide 2: The Solution -->
+<div class="slide" data-name="Solution">
+  <h2 class="st">The Fix: Short-Lived Anonymous Connections</h2>
+  <div class="card">
+    <div class="cl" style="color:var(--gn)">APPROACH</div>
+    <div class="ct">Broadcast locally submitted transactions (from <code style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--or)">sendrawtransaction</code> RPC) to the P2P network <strong>only via Tor or I2P short-lived connections</strong>, or to IPv4/IPv6 peers but routed through the Tor network.</div>
+  </div>
+  <div class="cols">
+    <div class="card">
+      <div class="cl" style="color:var(--cy)">KEY PROPERTY 1</div>
+      <div class="ct"><strong>IP concealment</strong> — your real IP address is never associated with the transaction broadcast.</div>
+    </div>
+    <div class="card">
+      <div class="cl" style="color:var(--cy)">KEY PROPERTY 2</div>
+      <div class="ct"><strong>Unlinkability</strong> — separate short-lived connections for each transaction prevent linking multiple transactions to the same source.</div>
+    </div>
+  </div>
+  <div class="box" style="background:var(--gnG);border:1px solid var(--gn)">
+    <div class="bl" style="color:var(--gn)">HOW IT DIFFERS FROM EXISTING TOR SUPPORT</div>
+    <div class="ct">Current Tor connections in Bitcoin Core are <strong>long-lived</strong> — the same circuit is used for many transactions over time. The new approach creates a <strong>fresh, disposable connection for each transaction broadcast</strong>, then tears it down. No persistent channel to fingerprint.</div>
+  </div>
+</div>
+
+<!-- Slide 3: Threat Model -->
+<div class="slide" data-name="Threat Model">
+  <h2 class="st">What This Protects Against</h2>
+  <div class="cols">
+    <div>
+      <div class="box" style="background:var(--gnG);border:1px solid var(--gn)">
+        <div class="bl" style="color:var(--gn)">✓ DEFENDED</div>
+        <div class="ct"><strong>Spy nodes</strong> — entities running many Bitcoin nodes to observe which node first broadcasts a transaction.<br><br><strong>ISP-level surveillance</strong> — even if your ISP sees you connecting to Tor, they can't see what you're sending.<br><br><strong>Cross-transaction linking</strong> — each tx uses a different connection, preventing clustering.</div>
+      </div>
+    </div>
+    <div>
+      <div class="box" style="background:var(--rdG);border:1px solid var(--rd)">
+        <div class="bl" style="color:var(--rd)">✗ NOT DEFENDED</div>
+        <div class="ct"><strong>On-chain analysis</strong> — this protects the <em>network layer</em>, not the <em>transaction graph</em>. UTXO linkage and amount correlation still work.<br><br><strong>Tor-level adversary</strong> — a global passive adversary controlling Tor entry/exit nodes could still correlate traffic (but this is a much higher bar).</div>
+      </div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="cl" style="color:var(--or)">PRACTICAL IMPACT</div>
+    <div class="ct">For most Bitcoin users, the network-layer privacy leak is the <strong>easiest and most commonly exploited</strong> attack vector. Chain surveillance companies routinely run supernodes to deanonymise broadcasters. This PR raises the cost of that attack significantly.</div>
+  </div>
+</div>
+
+</div></div>
+
+<div class="footer-nav">
+  <button class="nav-btn" id="prevBtn" onclick="go(-1)">← Prev</button>
+  <div class="nav-info" id="navInfo"></div>
+  <button class="nav-btn next" id="nextBtn" onclick="go(1)">Next →</button>
+</div>
+
+<script>
+const slides=document.querySelectorAll('.slide');const names=Array.from(slides).map(s=>s.dataset.name);let cur=0;
+function render(){slides.forEach((s,i)=>s.classList.toggle('active',i===cur));document.getElementById('dots').innerHTML=names.map((_,i)=>`<button class="dot${i===cur?' on':''}" onclick="goTo(${i})">${i+1}</button>`).join('');document.getElementById('navInfo').textContent=names[cur]+' · '+(cur+1)+' / '+slides.length;document.getElementById('prevBtn').disabled=cur===0;const nb=document.getElementById('nextBtn');nb.disabled=cur===slides.length-1;nb.className=cur===slides.length-1?'nav-btn':'nav-btn next'}
+function go(d){cur=Math.max(0,Math.min(slides.length-1,cur+d));render()}function goTo(i){cur=i;render()}document.addEventListener('keydown',e=>{if(e.key==='ArrowRight')go(1);if(e.key==='ArrowLeft')go(-1)});render();
+</script>
+</body>
+</html>

@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OpenClaw &amp; the Agent Security Dumpster Fire — Perth BitDevs</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700;800&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0a0e17;--sf:#111827;--sf2:#1a2332;--bd:#1e293b;--bd2:#334155;--tx:#e2e8f0;--txM:#94a3b8;--txD:#64748b;--or:#f7931a;--orG:rgba(247,147,26,.15);--orD:#b36a0f;--rd:#ef4444;--rdG:rgba(239,68,68,.12);--gn:#22c55e;--gnG:rgba(34,197,94,.12);--bl:#3b82f6;--blG:rgba(59,130,246,.12);--pu:#a855f7;--puG:rgba(168,85,247,.12);--pk:#ec4899;--pkG:rgba(236,72,153,.12);--yl:#eab308;--ylG:rgba(234,179,8,.12)}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--bg);color:var(--tx);font-family:'DM Sans',sans-serif;min-height:100vh;display:flex;flex-direction:column;overflow:hidden}
+.header{display:flex;align-items:center;justify-content:space-between;padding:10px 16px;border-bottom:1px solid var(--bd);flex-shrink:0}
+.badge{padding:3px 12px;background:var(--pkG);border:1px solid var(--pk);border-radius:16px;color:var(--pk);font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:700;letter-spacing:.08em}
+.dots{display:flex;gap:4px}.dot{padding:4px 10px;border:1px solid var(--bd);border-radius:4px;background:transparent;color:var(--txD);font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:500;cursor:pointer}.dot.on{border-color:var(--or);background:var(--orG);color:var(--or);font-weight:700}
+.branding{color:var(--txD);font-family:'JetBrains Mono',monospace;font-size:9px}
+.content{flex:1;display:flex;flex-direction:column;justify-content:center;padding:16px 20px;overflow:auto}
+.si{max-width:680px;margin:0 auto;width:100%}
+.slide{display:none}.slide.active{display:block}
+h2.st{font-size:21px;font-weight:800;letter-spacing:-.02em;text-align:center;margin-bottom:16px;background:linear-gradient(135deg,var(--pk),#f472b6);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.card{background:var(--sf2);border:1px solid var(--bd);border-radius:10px;padding:14px 18px;margin-bottom:10px}
+.cl{font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.04em;margin-bottom:6px}
+.ct{color:var(--txM);font-size:12.5px;line-height:1.55}.ct strong{color:var(--tx)}
+.box{border-radius:8px;padding:14px 18px;margin-bottom:10px}.box .bl{font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;margin-bottom:6px}
+.cols{display:flex;gap:10px}.cols>div{flex:1}
+.stat-row{display:flex;gap:10px;margin-bottom:10px}
+.stat{flex:1;background:var(--sf);border:1px solid var(--bd);border-radius:8px;padding:12px;text-align:center}
+.stat .num{font-family:'JetBrains Mono',monospace;font-size:22px;font-weight:800}
+.stat .sub{color:var(--txD);font-family:'JetBrains Mono',monospace;font-size:9px;margin-top:2px}
+.footer-nav{display:flex;align-items:center;justify-content:space-between;padding:10px 20px;border-top:1px solid var(--bd);flex-shrink:0}
+.nav-btn{padding:6px 18px;border:1px solid var(--bd2);border-radius:6px;background:transparent;color:var(--txM);font-family:'JetBrains Mono',monospace;font-size:11px;cursor:pointer}.nav-btn:disabled{opacity:.4;cursor:default}.nav-btn.next{border-color:var(--or);background:var(--orG);color:var(--or)}.nav-btn.next:disabled{border-color:var(--bd);background:transparent;color:var(--txD)}
+.nav-info{color:var(--txD);font-family:'JetBrains Mono',monospace;font-size:10px}
+@media(max-width:600px){.cols{flex-direction:column}.stat-row{flex-direction:column}h2.st{font-size:17px}}
+</style>
+</head>
+<body>
+<div class="header">
+  <div class="badge">AI AGENTS</div>
+  <div class="dots" id="dots"></div>
+  <div class="branding">Perth BitDevs</div>
+</div>
+<div class="content"><div class="si">
+
+<div class="slide" data-name="What">
+  <h2 class="st">OpenClaw, Moltbook &amp; the Agent Explosion</h2>
+  <div class="cols">
+    <div class="card">
+      <div class="cl" style="color:var(--pk)">OPENCLAW</div>
+      <div class="ct">Open-source, self-hosted AI <strong>agent</strong> on your hardware. Connects to chat apps (WhatsApp, Telegram, Discord, Signal). Executes shell commands, browses the web, manages email, takes <strong>autonomous actions</strong>. Think Jarvis, but as a lobster.</div>
+    </div>
+    <div class="card">
+      <div class="cl" style="color:var(--pu)">MOLTBOOK</div>
+      <div class="ct">Reddit-style social network built <strong>exclusively for AI agents</strong>. Humans "welcome to observe." Agents post, comment, upvote in "submolts." Creator claims he <strong>"didn't write one line of code"</strong>.</div>
+    </div>
+  </div>
+  <div class="stat-row">
+    <div class="stat"><div class="num" style="color:var(--pk)">145k</div><div class="sub">GitHub stars (~2mo)</div></div>
+    <div class="stat"><div class="num" style="color:var(--pu)">1.5M</div><div class="sub">agent accounts</div></div>
+    <div class="stat"><div class="num" style="color:var(--or)">17k</div><div class="sub">actual humans</div></div>
+    <div class="stat"><div class="num" style="color:var(--bl)">~88</div><div class="sub">agents/person</div></div>
+  </div>
+  <div class="card">
+    <div class="cl" style="color:var(--txD)">THE NAME GAME</div>
+    <div class="ct"><strong>Clawdbot</strong> (Nov 2025) &#8594; <strong>Moltbot</strong> (Jan 2026, Anthropic's lawyers) &#8594; <strong>OpenClaw</strong> (late Jan, "the lobster has molted into its final form").</div>
+  </div>
+</div>
+
+<div class="slide" data-name="Security">
+  <h2 class="st">The Security Dumpster Fire</h2>
+  <div class="box" style="background:var(--rdG);border:1px solid var(--rd)">
+    <div class="bl" style="color:var(--rd)">OPENCLAW RCE (CVE-2026-25253, CVSS 8.8)</div>
+    <div class="ct">Clicking a <strong>single malicious link</strong> could: exfiltrate your auth token, connect to your local instance, disable sandboxing, disable confirmations, and <strong>execute arbitrary code on your machine</strong>. Three security advisories in three days.</div>
+  </div>
+  <div class="box" style="background:var(--rdG);border:1px solid var(--rd)">
+    <div class="bl" style="color:var(--rd)">CLAWHUB SUPPLY CHAIN ("ClawHavoc")</div>
+    <div class="ct"><strong>341 malicious skills</strong> discovered. 335 distributed Atomic Stealer malware. The <strong>#1 ranked skill was malware</strong>. Publishing barrier: a GitHub account one week old. Maintainer admits the registry <strong>"cannot be secured."</strong></div>
+  </div>
+  <div class="box" style="background:var(--rdG);border:1px solid var(--rd)">
+    <div class="bl" style="color:var(--rd)">MOLTBOOK DATABASE BREACH</div>
+    <div class="ct">Unsecured Supabase exposed <strong>1.5M API keys, emails, private messages</strong>. Anyone could commandeer any agent. Fix: <strong>two SQL statements</strong>. Root cause: API keys hardcoded into frontend JS. One bot created 500k+ accounts (no rate limiting).</div>
+  </div>
+  <div class="card">
+    <div class="cl" style="color:var(--yl)">THE "LETHAL TRIFECTA"</div>
+    <div class="ct">Agents that (1) access private data, (2) read untrusted content, and (3) act externally with memory are <strong>vulnerable by design</strong> to prompt injection. Cost surprise: one agent burned ~$20 overnight checking the time (~$750/month projected).</div>
+  </div>
+</div>
+
+<div class="slide" data-name="Bitcoin Angle">
+  <h2 class="st">The Bitcoin &amp; Nostr Angle</h2>
+  <div class="box" style="background:var(--gnG);border:1px solid var(--gn)">
+    <div class="bl" style="color:var(--gn)">CLAWSTR &#8212; DECENTRALISED ALTERNATIVE</div>
+    <div class="ct"><strong>Clawstr</strong> on <strong>Nostr</strong> with native <strong>Lightning</strong>: agents own identity via Nostr keypairs (portable, no centralised DB to breach), Lightning Zaps for payments, no centralised rate limits. Uses NIP-22 and NIP-73 for structured agent interaction.</div>
+  </div>
+  <div class="card">
+    <div class="cl" style="color:var(--or)">MCP SERVERS FOR AGENTS</div>
+    <div class="ct"><strong>nostr-mcp</strong> and <strong>lightning-mcp</strong> servers enable agents to post to Nostr and make/receive Lightning payments autonomously &#8212; a voice on censorship-resistant social media + <strong>machine-to-machine micropayments</strong>.</div>
+  </div>
+  <div class="card">
+    <div class="cl" style="color:var(--bl)">WHY BITCOINERS SHOULD CARE</div>
+    <div class="ct"><strong>Identity needs crypto foundations</strong> &#8212; Moltbook's centralised model failed; Nostr keypairs solve this. <strong>Lightning as the AI economic layer</strong> &#8212; agents need permissionless micropayments. <strong>Self-sovereignty applies to AI</strong> &#8212; but sovereignty without security competence is dangerous.</div>
+  </div>
+  <div class="box" style="background:var(--puG);border:1px solid var(--pu)">
+    <div class="bl" style="color:var(--pu)">DEAD INTERNET THEORY: PROOF OF CONCEPT</div>
+    <div class="ct">1.5M "agents" from 17k humans, karma-farming and launching tokens. $MOLT rallied 4,700% in 24h, $CLAWSTR surged 33x. There is <strong>no official OpenClaw token</strong> &#8212; fakes have rug-pulled millions.</div>
+  </div>
+</div>
+
+</div></div>
+<div class="footer-nav">
+  <button class="nav-btn" id="prevBtn" onclick="go(-1)">&#8592; Prev</button>
+  <div class="nav-info" id="navInfo"></div>
+  <button class="nav-btn next" id="nextBtn" onclick="go(1)">Next &#8594;</button>
+</div>
+<script>
+var slides=document.querySelectorAll('.slide');var names=[];for(var i=0;i<slides.length;i++)names.push(slides[i].dataset.name);var cur=0;
+function render(){for(var i=0;i<slides.length;i++){slides[i].style.display=i===cur?'block':'none'}var h='';for(var i=0;i<names.length;i++){h+='<button class="dot'+(i===cur?' on':'')+'" onclick="goTo('+i+')">'+(i+1)+'</button>'}document.getElementById('dots').innerHTML=h;document.getElementById('navInfo').textContent=names[cur]+' \u00B7 '+(cur+1)+' / '+slides.length;document.getElementById('prevBtn').disabled=cur===0;var nb=document.getElementById('nextBtn');nb.disabled=cur===slides.length-1;nb.className=cur===slides.length-1?'nav-btn':'nav-btn next'}
+function go(d){cur=Math.max(0,Math.min(slides.length-1,cur+d));render()}function goTo(i){cur=i;render()}document.addEventListener('keydown',function(e){if(e.key==='ArrowRight')go(1);if(e.key==='ArrowLeft')go(-1)});render();
+</script>
+</body>
+</html>
