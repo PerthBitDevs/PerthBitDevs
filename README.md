@@ -11,7 +11,7 @@ The below list will be updated as/when/if the situation changes!
 
 - ~~January: Skipped (fell on New Year's Day)~~
 - ~~February: Thursday February 5 (first Thursday) venue The Loft Lounge & Bar @ InterContinential Perth City Centre~~
-- March: March 5 (first Thursday), venue TBD
+- March: March 5 (first Thursday), Rocky Ridge Burswood
 - April: April 2 (first Thursday), venue TBD
 - May: May 7 (first Thursday), venue TBD
 - June: June 4 (first Thursday), venue TBD
